@@ -3,39 +3,42 @@
 
 #include<Eigen/Dense>
 #include<iostream>
+#include <filesystem>
 
 using namespace std;
 
 int main() {
-    const string path = "~/trelemorele/sidehoes/digitrecognition/data/";
 
     const vector<unsigned int> neurons = {784, 30, 10};
 
-    constexpr Hyperparams parameters{10, 2, 60000, 10000, 10};
+    constexpr Hyperparams parameters{10, 2, 60000, 10000, 2};
 
-    Dataset dataset(path, parameters);
+    filesystem::path exe_path = filesystem::read_symlink("/proc/self/exe");
+    std::cout << "Full path: " << exe_path << std::endl;
+    std::cout << "Directory: " << exe_path.parent_path() << std::endl;
+    cout << exe_path.parent_path().parent_path() << endl;
 
+    //const Dataset dataset;
 
-    // Eigen::MatrixXf mini_batch = dataset.get_mini_batch(parameters.mini_batch_size);
-    //
-    // for (int image = 0; image < 10; image++) {
-    //     cout << mini_batch(0, image) << endl;
-    //     for (int i = 0; i < 28; i++) {
-    //         for (int j = 1; j < 28; j++) {
-    //             if (mini_batch(j + i * 28, image) > 0.5) {
-    //                 cout << "# ";
-    //             }
-    //             else {
-    //                 cout << ". ";
-    //             }
-    //         }
-    //         cout << endl;
-    //     }
-    //     cout << endl << endl;
-    // }
-
-
-    Network network(neurons, parameters, dataset);
-    network.train();
+    // Network network(neurons, parameters, dataset);
+    // network.train();
 
 }
+
+// cout << "Label: " << label << endl;
+// cout << "Prediction: " << predicted_label << endl;
+//
+// for (int i = 0; i < n; i++) {
+//     cout << tests(0, i) << endl;
+//
+//     for (int col = 0; col < 28; col++) {
+//         for (int row = 0; row < 28; row++) {
+//             float val = tests(row + col * 28, i);
+//             if (val > 0.25) cout << "# ";
+//             else cout << ". ";
+//         }
+//         cout << endl;
+//     }
+// }
+//
+// cout << endl;

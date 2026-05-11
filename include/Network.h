@@ -44,16 +44,14 @@ class Network {
     // Return the cost function for output 'a' and label vector.
     [[nodiscard]] float cost_function(const Eigen::VectorXf& a, const Eigen::VectorXf& label) const {
         return 0.5f * (a - label).array().square().sum();
-
     }
 
     // Returns an array with all layer activations stored in a vector.
     [[nodiscard]] NetworkState feedforward(const Eigen::VectorXf& input, unsigned int label) const;
 
+    // Apply backpropagation to the network.
     [[nodiscard]] Deltas backpropagation(const NetworkState& state);
 
-    // Return number of correctly classified images.
-    unsigned int test_model(unsigned int n) const ;
 
 
 public:
@@ -61,6 +59,9 @@ public:
 
     // Trains the neural network on the loaded dataset using backpropagation.
     void train();
+
+    // Return number of correctly classified images.
+    [[nodiscard]] unsigned int test_model(unsigned int n) const ;
 
 };
 

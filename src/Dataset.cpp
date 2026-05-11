@@ -4,33 +4,54 @@
 
 #include "../include/Dataset.h"
 
-
+#include<bit>
 #include<Eigen/Dense>
 #include<fstream>
 #include<iostream>
-#include <algorithm> // for std::swap
 #include <random>
+#include <filesystem>
 
 #define PIXEL_COUNT 784
 
 using namespace std;
-Dataset::Dataset(const string& path, const Hyperparams& params) : path_(path),
-                                                                  num_learning_images_(params.num_learning_img),
-                                                                  num_testing_images_(params.num_testing_img),
-                                                                  current_index(0) {};
+
+
+/*
+ *#TODO:
+ * Create a dataset loader which automatically detects files in /data/mnist
+ * and based on the magic numbers and size of the files determines which
+ * are the label files and which are the image files.
+ */
+// void Dataset::validate_file_headers(ifstream& train_images, ifstream& train_labels, ifstream& test_images, ifstream& test_labels) {
+//     int training_images_magical;
+//     int testing_images_magical;
+//
+//     train_images.read(reinterpret_cast<char*>(&training_images_magical), )
+// }
+
+DataFiles Dataset::find_files() {
+     filesystem::path path = filesystem::read_symlink("/proc/self/exe")
+}
 
 void Dataset::load_data() {
+
+    //find_files();
+
+
     // Open training data.
-    ifstream train_images("../data/train_images.idx3-ubyte", std::ios::binary);
-    ifstream train_labels("../data/train_labels.idx1-ubyte", std::ios::binary);
+    ifstream train_images("../data/mnist/train_images.idx3-ubyte", std::ios::binary);
+    ifstream train_labels("../data/mnist/train_labels.idx1-ubyte", std::ios::binary);
 
     // Open testing data.
-    ifstream test_images("../data/train_labels.idx1-ubyte", std::ios::binary);
-    ifstream test_labels("../data/test_labels.idx1-ubyte", std::ios::binary);
+    ifstream test_images("../data/mnist/test_images.idx3-ubyte", std::ios::binary);
+    ifstream test_labels("../data/mnist/test_labels.idx1-ubyte", std::ios::binary);
 
     if (!train_images.is_open() || !train_labels.is_open() || !test_images.is_open() || !test_labels.is_open()) {
         throw std::runtime_error("Could not open image or label file!");
     }
+
+    //validate_file_headers(train_images, train_labels, test_images, test_labels);
+
 
     // Skip 16 byte MNIST header.
     train_images.seekg(16);
@@ -40,12 +61,12 @@ void Dataset::load_data() {
     train_labels.seekg(8);
     test_labels.seekg(8);
 
-    learning_data_ = Eigen::MatrixXf(PIXEL_COUNT + 1, num_learning_images_);
+    learning_data_ = Eigen::MatrixXf(PIXEL_COUNT + 1, n_training_img);
 
     unsigned char buffer[PIXEL_COUNT + 1];
     unsigned char label[1];
 
-    for (int col = 0; col < num_learning_images_; col++) {
+    for (int col = 0; col < n_training_img; col++) {
         train_images.read(reinterpret_cast<char*>(buffer), PIXEL_COUNT);
         train_labels.read(reinterpret_cast<char*>(label), 1);
 
@@ -58,9 +79,9 @@ void Dataset::load_data() {
         }
     }
 
-    testing_data_ = Eigen::MatrixXf(PIXEL_COUNT + 1, num_testing_images_);
+    testing_data_ = Eigen::MatrixXf(PIXEL_COUNT + 1, n_testing_img);
 
-    for (int col = 0; col < num_testing_images_; col++) {
+    for (int col = 0; col < n_testing_img; col++) {
         test_images.read(reinterpret_cast<char*>(buffer), PIXEL_COUNT);
         test_labels.read(reinterpret_cast<char*>(label), 1);
 

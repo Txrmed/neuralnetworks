@@ -1,7 +1,7 @@
 include(FetchContent)
 
 cmake_minimum_required(VERSION 4.1)
-project(digitrecognition)
+project(neuralnetworks)
 
 set(CMAKE_CXX_STANDARD 23)
 
@@ -14,10 +14,10 @@ FetchContent_Declare(
 
 set(SOURCES src/main.cpp src/Network.cpp src/Dataset.cpp)
 
-add_executable(digitrecognition ${SOURCES})
+add_executable(neuralnetworks ${SOURCES})
 
-target_include_directories(digitrecognition PRIVATE include)
+target_include_directories(neuralnetworks PRIVATE include)
 
 FetchContent_MakeAvailable(Eigen)
-target_link_libraries(digitrecognition PRIVATE Eigen3::Eigen)
+target_link_libraries(neuralnetworks PRIVATE Eigen3::Eigen)
 
